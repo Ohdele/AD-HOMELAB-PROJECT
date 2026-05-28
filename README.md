@@ -186,7 +186,7 @@ Atomic Red Team execution output for MITRE ATT&CK technique ID T1136.001, showin
 
 Splunk detection showing Atomic Red Team T1136.001 activity, including creation of local user account “NewLocalUser” on the target Windows machine.
 
-## Summary
+## Detection Summary
 * Splunk detected RDP brute-force activity (EventCode 4625) with 211 failed login attempts against the “dsmith” account, followed by successful authentication events (4624).
 * All events occurred within the same time window, indicating clear brute-force behavior.
 * Expanded logs showed source workstation name and IP address involved in the attempts.
