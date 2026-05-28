@@ -132,3 +132,65 @@ Command-line execution outputs checking active environment details on the workst
 ## Summary
 Active Directory was successfully configured on the server, promoted to a Domain Controller for `DFIR.local`, and the Windows 10 machine successfully joined and authenticated to the domain using the Dele Smith account, confirming full domain functionality.
 
+---
+
+
+# Part 5 — Cyber Attack Simulation & Detection
+
+## Objective
+Use Kali Linux to perform a brute-force attack against Active Directory users and run MITRE ATT&CK techniques with Atomic Red Team, using Splunk to query the activity and identify detection gaps.
+
+## Skills Learned
+* Active Directory attack simulation and detection analysis
+* RDP brute-force attack execution using Hydra
+* Splunk log analysis and telemetry investigation
+* Windows Security Event and Sysmon log monitoring
+* MITRE ATT&CK technique mapping and validation
+* Atomic Red Team installation and attack simulation
+* Detection gap identification and visibility analysis
+* PowerShell-based attack execution and monitoring
+
+## Tools
+* Kali Linux
+* Hydra
+* Splunk Enterprise (SIEM)
+* Windows Server (Active Directory Domain Controller)
+* Windows 10 Client VM
+* Atomic Red Team
+* Sysmon
+
+## Steps
+
+### Ref 1: Hydra RDP Brute-Force Execution
+<img src="part5-screenshots/01_Hydra_RDP_BF_Exec.png" width="800">
+
+Hydra RDP brute-force attack executed against the target Windows machine (user: dsmith) using a reduced RockYou wordlist (first 20 entries), generating multiple login attempts over the RDP service.
+
+### Ref 2: Splunk RDP Brute-Force Detection (EventCode 4625)
+<img src="part5-screenshots/02_Splunk_RDP_BF_Detection.png" width="800">
+
+Splunk query results showing RDP brute-force activity against WIN-NEB6ORBJ7S7, including failed logon events (EventCode 4625) and authentication telemetry correlated from Windows Security logs.
+
+### Ref 3: Splunk Successful Compromise Verification (EventCode 4624)
+<img src="part5-screenshots/03_Splunk_4624_SuccessfulLogon_dsmith.png" width="800">
+
+Splunk event showing successful RDP logon (EventCode 4624) for user dsmith on WIN-NEB6ORBJ7S7, including authentication and source log details confirming the brute-force succeeded.
+
+### Ref 4: Atomic Red Team Persistence Execution (T1136.001)
+<img src="part5-screenshots/04_ART_T1136.001_NLU.png" width="800">
+
+Atomic Red Team execution output for MITRE ATT&CK technique ID T1136.001, showing local user creation, privilege escalation to Administrators, and cleanup on the Windows 10 target VM.
+
+### Ref 5: Splunk Malicious Account Creation Detection
+<img src="part5-screenshots/05_Splunk_T1136.001_NewLocalUser_Detection.png" width="800">
+
+Splunk detection showing Atomic Red Team T1136.001 activity, including creation of local user account “NewLocalUser” on the target Windows machine.
+
+## Summary
+* Splunk detected RDP brute-force activity (EventCode 4625) with 211 failed login attempts against the “dsmith” account, followed by successful authentication events (4624).
+* All events occurred within the same time window, indicating clear brute-force behavior.
+* Expanded logs showed source workstation name and IP address involved in the attempts.
+* Atomic Red Team T1136.001 execution showed creation of local user “NewLocalUser” on the target system, mapped to MITRE ATT&CK persistence technique.
+* Both brute-force and ART activity generated true positive detections, confirming SIEM visibility across initial access and persistence stages.
+* This enables future alert creation for similar brute-force and MITRE ATT&CK-based behaviors.
+
